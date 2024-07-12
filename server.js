@@ -43,6 +43,8 @@ app.get('/', (req, res) => {
 }
 //////////////////////////Products similar Scraper/////////////
 async function getSimilarItems(productUrl) {
+  // Configurer le chemin du cache si nécessaire
+  process.env.PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(productUrl, { waitUntil: 'networkidle2' });
