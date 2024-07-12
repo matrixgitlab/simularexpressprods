@@ -43,9 +43,8 @@ app.get('/', (req, res) => {
 }
 //////////////////////////Products similar Scraper/////////////
 async function getSimilarItems(productUrl) {
-  // Configurer le chemin du cache si nécessaire
   
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto(productUrl, { waitUntil: 'networkidle2' });
 
