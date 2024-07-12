@@ -44,12 +44,12 @@ app.get('/', (req, res) => {
 //////////////////////////Products similar Scraper/////////////
 async function getSimilarItems(productUrl) {
   
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(productUrl, { waitUntil: 'networkidle2' });
 
 // Attendre que les articles similaires soient chargés - ajustez le sélecteur selon la page
-  await page.waitForSelector('._1wVX7');
+  await page.waitForSelector('.slick-list');
 // Nombre de fois à défiler
 const scrollTimes = 1;
 const scrollDistance = 50; // Distance à défiler en pixels à chaque fois
@@ -61,7 +61,7 @@ await scrollDown(page, scrollDistance);
     
     
     // Sélecteurs pour les articles similaires
-    const items = document.querySelectorAll('._2FypS');
+    const items = document.querySelectorAll('._1Hxqh');
 
     console.log(items);
   
