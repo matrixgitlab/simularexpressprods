@@ -49,7 +49,7 @@ async function getSimilarItems(productUrl) {
   await page.goto(productUrl, { waitUntil: 'networkidle2' });
 
 // Attendre que les articles similaires soient chargés - ajustez le sélecteur selon la page
-  await page.waitForSelector('.slick-list');
+  await page.waitForSelector('._1Hxqh');
 // Nombre de fois à défiler
 const scrollTimes = 1;
 const scrollDistance = 50; // Distance à défiler en pixels à chaque fois
