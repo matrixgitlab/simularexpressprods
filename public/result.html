@@ -1,0 +1,362 @@
+<html><head>
+    <title>ThriftCrafter - Smart Watch Comparison</title>
+    <style>
+      :root {
+        --primary-color: #ff4747;
+        --secondary-color: #ff6a00;
+        --background-color: #f2f2f2;
+        --text-color: #333333;
+        --card-bg-color: #ffffff;
+        --border-color: #e8e8e8;
+        --price-color: #ff4747;
+        --discount-color: #ff6a00;
+      }
+    
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+    
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        flex-grow: 1;
+      }
+    
+      header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.5rem 0;
+      }
+    
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+    
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+    
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--card-bg-color);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow-x: auto;
+      }
+    
+      .comparison-table th,
+      .comparison-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+    
+      .comparison-table th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+    
+      .comparison-table tr:last-child td {
+        border-bottom: none;
+      }
+    
+      .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    
+      .product-name {
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+    
+      .product-price {
+        font-weight: bold;
+        color: var(--price-color);
+      }
+    
+      .rating {
+        display: flex;
+        align-items: center;
+      }
+    
+      .stars {
+        color: #ff9900;
+        margin-right: 0.5rem;
+      }
+    
+      .feature-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+    
+      .feature-list li::before {
+        content: "✓";
+        color: var(--secondary-color);
+        margin-right: 0.5rem;
+      }
+    
+      .buy-button {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+    
+      .buy-button:hover {
+        background-color: #e65c00;
+      }
+    
+      footer {
+        background-color: #f8f8f8;
+        color: #666;
+        text-align: center;
+        padding: 1rem 0;
+        margin-top: 2rem;
+        font-size: 0.8rem;
+      }
+    
+      @media (max-width: 768px) {
+        .comparison-table {
+          font-size: 0.9rem;
+        }
+    
+        .comparison-table th,
+        .comparison-table td {
+          padding: 0.5rem;
+        }
+    
+        .product-image {
+          width: 80px;
+          height: 80px;
+        }
+      }
+    </style>
+    </head>
+    <body>
+      <header>
+        <div class="header-content">
+          <div class="logo">ThriftCrafter</div>
+        </div>
+      </header>
+    
+      <div class="container">
+        <h1>Smart Watch Comparison</h1>
+        <div class="table-container">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th></th>
+                <th>Sold</th>
+                <th>Shipping</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="product-tbody">
+              <!--tr>
+                <td>
+                  <img src="https://fake-images.thriftcrafter.com/smartwatch-x3pro.jpg" alt="Smart Watch X3 Pro" class="product-image" width="100" height="100">
+                  <div class="product-name">Smart Watch X3 Pro</div>
+                </td>
+                <td class="product-price">$49.99</td>
+                <td>
+                  <div class="rating">
+                    <span class="stars">★★★★☆</span>
+                    <span>(1,234)</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="feature-list">
+                    <li>Heart Rate Monitor</li>
+                    <li>GPS</li>
+                    <li>Sleep Tracking</li>
+                    <li>Multiple Sport Modes</li>
+                  </ul>
+                </td>
+                <td>14 days</td>
+                <td>5 ATM</td>
+                <td><a href="#" class="buy-button">Buy Now</a></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://fake-images.thriftcrafter.com/fitpro-smartband.jpg" alt="FitPro Smartband" class="product-image" width="100" height="100">
+                  <div class="product-name">FitPro Smartband</div>
+                </td>
+                <td class="product-price">$29.99</td>
+                <td>
+                  <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span>(2,567)</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="feature-list">
+                    <li>Heart Rate Monitor</li>
+                    <li>Sleep Tracking</li>
+                    <li>Step Counter</li>
+                  </ul>
+                </td>
+                <td>7 days</td>
+                <td>IP67</td>
+                <td><a href="#" class="buy-button">Buy Now</a></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://fake-images.thriftcrafter.com/techwear-z1.jpg" alt="TechWear Z1 Watch" class="product-image" width="100" height="100">
+                  <div class="product-name">TechWear Z1 Watch</div>
+                </td>
+                <td class="product-price">$59.99</td>
+                <td>
+                  <div class="rating">
+                    <span class="stars">★★★★☆</span>
+                    <span>(987)</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="feature-list">
+                    <li>Heart Rate Monitor</li>
+                    <li>GPS</li>
+                    <li>ECG</li>
+                    <li>Blood Oxygen</li>
+                  </ul>
+                </td>
+                <td>10 days</td>
+                <td>3 ATM</td>
+                <td><a href="#" class="buy-button">Buy Now</a></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://fake-images.thriftcrafter.com/sporttrack-gps.jpg" alt="SportTrack GPS Watch" class="product-image" width="100" height="100">
+                  <div class="product-name">SportTrack GPS Watch</div>
+                </td>
+                <td class="product-price">$79.99</td>
+                <td>
+                  <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span>(3,210)</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="feature-list">
+                    <li>Heart Rate Monitor</li>
+                    <li>GPS</li>
+                    <li>Altimeter</li>
+                    <li>Route Tracking</li>
+                  </ul>
+                </td>
+                <td>20 days</td>
+                <td>10 ATM</td>
+                <td><a href="#" class="buy-button">Buy Now</a></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://fake-images.thriftcrafter.com/healthmonitor-s2.jpg" alt="HealthMonitor S2" class="product-image" width="100" height="100">
+                  <div class="product-name">HealthMonitor S2</div>
+                </td>
+                <td class="product-price">$39.99</td>
+                <td>
+                  <div class="rating">
+                    <span class="stars">★★★★☆</span>
+                    <span>(1,876)</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="feature-list">
+                    <li>Heart Rate Monitor</li>
+                    <li>Blood Pressure</li>
+                    <li>Sleep Tracking</li>
+                    <li>Stress Monitor</li>
+                  </ul>
+                </td>
+                <td>5 days</td>
+                <td>IP68</td>
+                <td><a href="#" class="buy-button">Buy Now</a></td>
+              </tr-->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <footer>
+        <p>&copy; 2023 ThriftCrafter. All rights reserved. | Product comparison page for demonstration purposes only.</p>
+      </footer>
+   
+
+   <h1>Submitted Details</h1>
+   <div id="details"></div>
+   <script>
+       // Faire une requête pour obtenir les données de la session
+       fetch('/get-data')
+           .then(response => {
+                       if (!response.ok) {
+                            throw new Error(`Erreur HTTP! Statut : ${response.status}`);
+                        }
+                        return response.json();
+            })
+            .then(data => {
+            
+               if (data && data.length > 0) {
+                   const tbody = document.getElementById('product-tbody');
+                   data.forEach(product => {
+                       const row = document.createElement('tr');
+                       console.log(product.title);
+
+                       row.innerHTML = `
+                           <td>
+                               <img src="${product.image}" alt="${product.title}" class="product-image" width="250" height="250" >
+                               <div class="product-name" width="250" height="250">${product.title}</div>
+                           </td>`+
+                           `<td class="product-price">${product.price} - ${product.realprice}</td>
+                           <td>
+                               <div class="rating">
+                                   <!--span class="stars">${'★'.repeat(product.reviews)}${'☆'.repeat(5 - product.reviews)}</span-->
+                                   <span><img src="(${product.reviews})" width="14" height="14" ></span>
+                               </div>
+                           </td>
+                           <td>
+                               <ul class="feature-list">
+                                   ${product.features && product.features.length > 0 ? product.features.map(feature => `<li>${feature}</li>`).join('') : '<li>No features available</li>'}
+                               </ul>
+                           </td>
+                           <td>${product.sold}</td>
+                           <td><img src="${product.choise}" width="100" height="24" ></br> ${product.shipping}</td>
+                           <td><a href="${product.link}" class="buy-button">Buy Now</a></td>
+                       `;
+
+                       tbody.appendChild(row);
+                   });
+               } else {
+                   document.getElementById('details').textContent = 'No details submitted';
+               }
+           })
+           .catch(error => console.error('Error fetching the data:', error));
+   </script>
+    </body></html>

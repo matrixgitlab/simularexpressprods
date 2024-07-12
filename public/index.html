@@ -1,0 +1,344 @@
+<html><head>
+    <title>ThriftCrafter - Elevate Your AliExpress Shopping</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --primary-color: #FF4E50;
+            --secondary-color: #FC913A;
+            --text-color: #333;
+            --bg-color: #F9F7F7;
+            --card-bg: #FFFFFF;
+            --accent-color: #4ECDC4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            background-color: var(--card-bg);
+            border-radius: 50px;
+            padding: 2rem;
+            margin-top: -25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: #45b7aa;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .how-it-works {
+            margin-top: 4rem;
+            padding: 4rem 0;
+            background-color: #f0f0f0;
+        }
+
+        .step-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .step {
+            flex-basis: 30%;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            line-height: 40px;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            margin-top: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .step-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+
+        /* Style pour le conteneur de chargement */
+        #loading {
+            display: none; /* Masqué par défaut */
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10001;
+        }
+
+        /* Style pour l'animation de chargement */
+        .spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Cacher le contenu principal pendant le chargement */
+        .hidden {
+            display: none;
+        }
+         /* Style pour la superposition */
+         #overlay {
+            display: none; /* Masqué par défaut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 5.10); /* Semi-transparent */
+            z-index: 10000;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <!-- Superposition semi-transparente -->
+    <div id="overlay"></div>
+    <header>
+        <div class="container">
+            <h1 class="logo">ThriftCrafter</h1>
+            <p class="tagline">Elevate Your AliExpress Shopping Experience</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <form class="search-form" action="/process" method="POST" >
+                <input type="url" name="url" class="search-input" placeholder="Paste AliExpress product URL here" required>
+                <button type="submit" class="search-button" id="analyze-button">Analyze Product</button>
+            </form>
+            <!-- Animation de chargement -->
+            <div id="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Smart Analysis</h3>
+                <p>Get in-depth product insights and pricing information instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Price History</h3>
+                <p>View historical price trends to make informed decisions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚚</div>
+                <h3>Shipping Calculator</h3>
+                <p>Compare shipping options and estimate delivery times.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Similar Products</h3>
+                <p>Discover alternatives and related items to broaden your choices.</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="step-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Find & Copy</h3>
+                    <p>Browse AliExpress and copy the URL of any product you're interested in.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Paste & Analyze</h3>
+                    <p>Paste the URL into ThriftCrafter and click 'Analyze Product'.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Shop Smarter</h3>
+                    <p>Review our comprehensive analysis and make an informed purchase decision.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Revolutionize Your AliExpress Shopping?</h2>
+            <p>Join thousands of savvy shoppers who are already using ThriftCrafter to make smarter purchases.</p>
+            <a href="#" class="cta-button">Get Started Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 ThriftCrafter. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // Sélectionner le bouton et l'élément de chargement
+        const analyzeButton = document.getElementById('analyze-button');
+        const loadingElement = document.getElementById('loading');
+        const mainContent = document.getElementById('main-content');
+    
+        // Ajouter un gestionnaire d'événement de clic au bouton
+        analyzeButton.addEventListener('click', function() {
+            // Afficher l'animation de chargement
+            loadingElement.style.display = 'block';
+            // Masquer le contenu principal
+            mainContent.classList.add('hidden');
+    
+            // Simuler une requête asynchrone (par exemple, extraction de données)
+            setTimeout(() => {
+                // Masquer l'animation de chargement après 3 secondes
+                loadingElement.style.display = 'none';
+                // Afficher le contenu principal
+                mainContent.classList.remove('hidden');
+                // Rediriger vers la page suivante ou afficher les données
+                alert('Données extraites et page suivante chargée.');
+            }, 3000); // Modifier la durée selon vos besoins
+        });
+    </script>
+
+</body>
+</html>
