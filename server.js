@@ -6,7 +6,7 @@ const session = require('express-session');
 const { stringify } = require('querystring');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 4000;
 
 // Configuration de la session
 app.use(session({
