@@ -1,3 +1,4 @@
 node_modules
 .puppeteerrc.cjs
 .cache/
+pageContent.txt

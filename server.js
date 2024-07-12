@@ -4,6 +4,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const session = require('express-session');
 const { stringify } = require('querystring');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -47,6 +48,16 @@ async function getSimilarItems(productUrl) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(productUrl, { waitUntil: 'networkidle2' });
+  // Extraire le contenu HTML complet de la page
+  const pageContent = await page.content();
+   // Enregistrer le contenu de la page dans un fichier texte
+   fs.writeFile('pageContent.txt', pageContent, (err) => {
+    if (err) {
+        console.error('Erreur lors de l\'écriture du fichier', err);
+    } else {
+        console.log('Le contenu de la page a été enregistré avec succès dans pageContent.txt');
+    }
+});
 
 // Attendre que les articles similaires soient chargés - ajustez le sélecteur selon la page
   await page.waitForSelector('._1Hxqh');
@@ -116,6 +127,20 @@ app.get('/result', (req, res) => {
   } else {
       res.redirect('/');
   }
+});
+
+
+// Définir une route pour /pageContent pour // Lire le fichier pageContent.txt
+app.get('/pageContent', (req, res) => {
+  const filePath = path.join(__dirname, 'pageContent.txt');
+
+  // Envoyer le fichier en tant que pièce jointe pour téléchargement
+  res.download(filePath, 'pageContent.txt', (err) => {
+      if (err) {
+          console.error('Erreur lors de l\'envoi du fichier', err);
+          res.status(500).send('Erreur lors de l\'envoi du fichier');
+      }
+  });
 });
 
 
