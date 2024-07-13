@@ -48,14 +48,14 @@ app.get('/', (req, res) => {
 async function getSimilarItems(productUrl) {
   
   const browser = await puppeteer.launch({ 
-                                            headless: true });/*,
-                                            args: ['--proxy-server=35.185.196.38:3128']*/
+                                            headless: true,
+                                            args: ['--proxy-server=35.185.196.38:3128'] });/*,args: ['--proxy-server=35.185.196.38:3128']*/
   const page = await browser.newPage();
   const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc';
 
   //await page.goto(photoUrl);
   
-  await page.goto(photoUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+  await page.goto(photoUrl, { waitUntil: 'networkidle2', timeout: 150000 });
   // Extraire le contenu HTML complet de la page
   const pageContent = await page.content();
    // Enregistrer le contenu de la page dans un fichier texte
