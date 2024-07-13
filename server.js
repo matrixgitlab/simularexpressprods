@@ -5,6 +5,8 @@ const puppeteer = require('puppeteer');
 const session = require('express-session');
 const { stringify } = require('querystring');
 const fs = require('fs');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -38,16 +40,22 @@ app.get('/', (req, res) => {
                     clearInterval(timer);
                     resolve();
                 }
-            }, 50);
+            }, 190);
         });
     }, distance);
 }
 //////////////////////////Products similar Scraper/////////////
 async function getSimilarItems(productUrl) {
   
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ 
+                                            headless: false });/*,
+                                            args: ['--proxy-server=35.185.196.38:3128']*/
   const page = await browser.newPage();
-  await page.goto(productUrl, { waitUntil: 'networkidle2' });
+  const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc';
+
+  //await page.goto(photoUrl);
+  
+  await page.goto(photoUrl, { waitUntil: 'networkidle2' });
   // Extraire le contenu HTML complet de la page
   const pageContent = await page.content();
    // Enregistrer le contenu de la page dans un fichier texte
@@ -60,7 +68,7 @@ async function getSimilarItems(productUrl) {
 });
 
 // Attendre que les articles similaires soient chargés - ajustez le sélecteur selon la page
-  await page.waitForSelector('._1Hxqh');
+  await page.waitForSelector('.multi--modalContext--1Hxqhwi');
 // Nombre de fois à défiler
 const scrollTimes = 1;
 const scrollDistance = 50; // Distance à défiler en pixels à chaque fois
@@ -72,29 +80,28 @@ await scrollDown(page, scrollDistance);
     
     
     // Sélecteurs pour les articles similaires
-    const items = document.querySelectorAll('._1Hxqh');
+    const items = document.querySelectorAll('.multi--modalContext--1Hxqhwi');
 
     console.log(items);
   
 
     return Array.from(items).map(item => {
       // Ajustez les sélecteurs ci-dessous pour correspondre aux informations des articles similaires sur la page
-      const title = item.querySelector('.G7dOC')?.innerText || 'No title';
-      const reviews = item.querySelector('.EYoOU')?.src || 'No review';
-      const sold = item.querySelector('.Ktbl2')?.innerText || 'No sold';
-      const price = item.querySelector('.U-S0j')?.innerText || 'No price';
-      const realprice = item.querySelector('._1zEQq')?.innerText || 'Real Price';
-      const link = item.querySelector('._1UZxx')?.href || 'No link';
+      const title = item.querySelector('.multi--title--G7dOCj3')?.title || 'No title';
+      const reviews = item.querySelector('.multi--evalutionModal--Ktfxu90')?.innerHTML || 'No review';
+      const sold = item.querySelector('.multi--trade--Ktbl2jB')?.innerText || 'No sold';
+      const price = item.querySelector('.multi--price--1okBCly')?.innerHTML || 'No Price';
+      const link = item.querySelector('.multi--container--1UZxxHY')?.href || 'No link';
 
-      const image = item.querySelector('._1IH3l')?.src || 'No image';
-      const choise = item.querySelector('._1lYat')?.src || 'No image';
+      const image = item.querySelector('.multi--img--1IH3lZb')?.src || 'No image';
+      const choise = item.querySelector('.tag--imgStyle--1lYatsQ')?.src || '';
       
-      const shipping = item.querySelector('._3vRdz')?.innerText || 'No information about shipping';
+      const shipping = item.querySelector('.multi--serviceContainer--3vRdzWN')?.innerText || 'No information about shipping';
 
    
     //const n = n + 1;
 
-      return { title, reviews, sold, price, realprice, link, image, shipping, choise};
+      return { title, reviews, sold, price, link, image, shipping, choise};
     });
   });
 
@@ -134,11 +141,14 @@ app.get('/result', (req, res) => {
 app.get('/pageContent', (req, res) => {
   const filePath = path.join(__dirname, 'pageContent.txt');
 
-  // Envoyer le fichier en tant que pièce jointe pour téléchargement
-  res.download(filePath, 'pageContent.txt', (err) => {
+  // Lire le fichier pageContent.txt
+  fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
-          console.error('Erreur lors de l\'envoi du fichier', err);
-          res.status(500).send('Erreur lors de l\'envoi du fichier');
+          console.error('Erreur lors de la lecture du fichier', err);
+          res.status(500).send('Erreur lors de la lecture du fichier');
+      } else {
+          // Envoyer le contenu du fichier en réponse
+          res.send(data);
       }
   });
 });
@@ -156,7 +166,29 @@ app.get('/get-data', (req, res) => {
   }
 });
 
+
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+/*const fetchGames = async () => {
+            try {
+                 
+                  const response = await axios.get('url');
+                  const html = response.data
+                  const $ = cheerio.load(html)
+                  const games = []
+                  $('div.sg-col-4-of-12.s-result-item.s-asin.sg-col-4-of-16.sg-col.sg-col-4-of-20').each((index, el) => {
+                        const game = $(el)
+                        const title = game.find('span.a-size-base-plus.a-color-base.a-text-normal').text()
+                        games.push(title)
+               })
+                        return games
+            } catch (err) {
+                  console.error(err)
+            }
+            
+            }
+                //fetchGames().then(games => console.log(games))*/
 
