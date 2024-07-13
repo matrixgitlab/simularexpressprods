@@ -55,7 +55,7 @@ async function getSimilarItems(productUrl) {
 
   //await page.goto(photoUrl);
   
-  await page.goto(photoUrl, { waitUntil: 'networkidle2' });
+  await page.goto(photoUrl, { waitUntil: 'networkidle2', timeout: 60000 });
   // Extraire le contenu HTML complet de la page
   const pageContent = await page.content();
    // Enregistrer le contenu de la page dans un fichier texte
