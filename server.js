@@ -51,7 +51,7 @@ async function getSimilarItems(productUrl) {
                                             headless: true,
                                             args: ['--proxy-server=35.185.196.38:3128'] });/*,args: ['--proxy-server=35.185.196.38:3128']*/
   const page = await browser.newPage();
-  const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc';
+  const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc&gatewayAdapt=glo2fra';
 
   //await page.goto(photoUrl);
   
