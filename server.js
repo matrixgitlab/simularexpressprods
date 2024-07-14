@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
             let totalHeight = 0;
             const timer = setInterval(() => {
                 const scrollHeight = document.body.scrollHeight;
-                window.scrollBy(0, distance);
+                window.scrollBy(distance, distance);
                 totalHeight += distance;
 
                 if (totalHeight >= scrollHeight) {
@@ -44,11 +44,27 @@ app.get('/', (req, res) => {
         });
     }, distance);
 }
+
+async function geoLocationSwitch() {
+  const browser = await puppeteer.launch({ 
+    headless: false,
+    args: ['--proxy-server=35.185.196.38:3128']});/*,args: ['--proxy-server=35.185.196.38:3128']*/
+const page = await browser.newPage();
+const aliexpressurl = 'https://www.aliexpress.com/?gatewayAdapt=glo2fra';
+
+//await page.goto(photoUrl);
+
+await page.goto(aliexpressurl, { timeout: 150000 });
+
+
+}
 //////////////////////////Products similar Scraper/////////////
 async function getSimilarItems(productUrl) {
+
+  //await geoLocationSwitch();
   
   const browser = await puppeteer.launch({ 
-                                            headless: true,
+                                            headless: false,
                                             args: ['--proxy-server=35.185.196.38:3128'] });/*,args: ['--proxy-server=35.185.196.38:3128']*/
   const page = await browser.newPage();
   const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc&gatewayAdapt=glo2fra';
