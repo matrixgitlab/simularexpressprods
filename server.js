@@ -78,6 +78,16 @@ async function googleSearchProds(productUrl) {
     //await page.keyboard.press('Enter');
     const itemToClickSelector = '.ant-btn'; // Exemple : '.dropdown-item'
         await page.click(itemToClickSelector);
+        const pageContent = await page.content();
+        // Enregistrer le contenu de la page dans un fichier texte
+        fs.writeFile('pageContent.txt', pageContent, (err) => {
+        if (err) {
+        console.error('Erreur lors de l\'écriture du fichier', err);
+        } else {
+        console.log('Le contenu de la page a été enregistré avec succès dans pageContent.txt');
+        }
+        });
+        await page.screenshot({ path: 'page.png' });
   
     // Attendre que la page des résultats de recherche se charge
     await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 50000 });
@@ -105,16 +115,7 @@ async function googleSearchProds(productUrl) {
       }
     }*///search--picSearch--3aeyGeH|esm-upload-content--Jn-r24P
      // Extraire le contenu HTML complet de la page
-     const pageContent = await page.content();
-     // Enregistrer le contenu de la page dans un fichier texte
-     fs.writeFile('pageContent.txt', pageContent, (err) => {
-     if (err) {
-     console.error('Erreur lors de l\'écriture du fichier', err);
-     } else {
-     console.log('Le contenu de la page a été enregistré avec succès dans pageContent.txt');
-     }
-     });
-     await page.screenshot({ path: 'page.png' });
+    
 
 
        // Sélecteur de l'élément à survoler (remplacez-le par le sélecteur correct)
