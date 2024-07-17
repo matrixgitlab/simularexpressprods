@@ -78,7 +78,7 @@ async function googleSearchProds(productUrl) {
     await page.keyboard.press('Enter');
   
     // Attendre que la page des résultats de recherche se charge
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 150000 });
   
     // Extraire tous les liens des résultats de recherche
     const searchResults = await page.evaluate(() => {
@@ -273,10 +273,11 @@ app.post('/process', async (req, res) => {
   console.log('Received URL:', productUrl);
 
   try {
-    const similarItems = await getSimilarItems(productUrl);
-    req.redirect('/page');// Redirige vers screenshot
-    req.session.formData = similarItems; // Stocke les données dans la session
-    //res.redirect('/result'); // Redirige vers la page de résultat
+    await googleSearchProds(productUrl);
+    //const similarItems = await getSimilarItems(productUrl);
+    //req.redirect('/page');// Redirige vers screenshot
+    //req.session.formData = similarItems; // Stocke les données dans la session
+    res.redirect('/result'); // Redirige vers la page de résultat
     
   } catch (error) {
     console.error('Erreur:', error);
@@ -291,6 +292,7 @@ app.post('/process', async (req, res) => {
 app.get('/result', (req, res) => {
   if (req.session.formData) {
       res.sendFile(path.join(__dirname, 'public', 'result.html'));
+      req.redirect('/page');
   } else {
       res.redirect('/');
   }
