@@ -202,7 +202,7 @@ async function getSimilarItems(productUrl) {
 async function getSimilarItemsByimg(productUrl){
                   
                   const browser = await puppeteer.launch({ 
-                    headless: false });/*,args: ['--proxy-server=35.185.196.38:3128']*/
+                    headless: true });/*,args: ['--proxy-server=35.185.196.38:3128']*/
                 const page = await browser.newPage();
                 //const photoUrl = 'https://fr.aliexpress.com/w/wholesale-.html?isNewImageSearch=y&filename='+productUrl+'&isNewImageSearch=y&g=y&sortType=total_tranpro_desc&gatewayAdapt=glo2fra';
                 const photoUrl = productUrl;
