@@ -65,25 +65,31 @@ async function googleSearchProds(productUrl) {
   await downloadImage(imageUrl, imagePath);
   
     // Lance le navigateur
-    const browser = await puppeteer.launch({ headless: true});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
     const page = await browser.newPage();
   
     // Aller sur Google
-    await page.goto('https://www.google.com');
+    await page.goto('https://ds.aliexpress.com/product-analysis');
   
     // Saisir l'URL du produit dans la barre de recherche
-    await page.type('textarea[name="q"]', 'url:'+aliexpressUrl);
+    await page.type('textarea[class="ant-input css-rwhs8m ant-input-outlined"]', aliexpressUrl);
   
     // Soumettre le formulaire de recherche
-    await page.keyboard.press('Enter');
+    //await page.keyboard.press('Enter');
+    const itemToClickSelector = '.ant-btn'; // Exemple : '.dropdown-item'
+        await page.click(itemToClickSelector);
   
     // Attendre que la page des résultats de recherche se charge
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 150000 });
+    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 50000 });
+    //const itemprod = document.querySelectorAll('a');
+    const linkprod = document.querySelector('a') ?.href;
+    console.log(linkprod);
+    await page.goto(linkprod);
   
-    // Extraire tous les liens des résultats de recherche
+    /* Extraire tous les liens des résultats de recherche
     const searchResults = await page.evaluate(() => {
       const results = [];
-      const items = document.querySelectorAll('a h3');
+      const items = document.querySelectorAll('a');
       items.forEach(item => {
         const parentLink = item.parentElement.href;
         results.push(parentLink);
@@ -97,7 +103,7 @@ async function googleSearchProds(productUrl) {
         await page.goto(link);
         break;
       }
-    }//search--picSearch--3aeyGeH|esm-upload-content--Jn-r24P
+    }*///search--picSearch--3aeyGeH|esm-upload-content--Jn-r24P
      // Extraire le contenu HTML complet de la page
      const pageContent = await page.content();
      // Enregistrer le contenu de la page dans un fichier texte
