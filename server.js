@@ -72,7 +72,7 @@ async function googleSearchProds(productUrl) {
     await page.goto('https://www.google.com');
   
     // Saisir l'URL du produit dans la barre de recherche
-    await page.type('textarea[name="q"]', aliexpressUrl);
+    await page.type('textarea[name="q"]', 'url:'+aliexpressUrl);
   
     // Soumettre le formulaire de recherche
     await page.keyboard.press('Enter');
