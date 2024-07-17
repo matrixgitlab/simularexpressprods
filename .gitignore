@@ -2,3 +2,5 @@ node_modules
 .puppeteerrc.cjs
 .cache/
 pageContent.txt
+downloaded_image.png
+page.png
