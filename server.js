@@ -65,7 +65,7 @@ async function googleSearchProds(productUrl) {
   await downloadImage(imageUrl, imagePath);
   
     // Lance le navigateur
-    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const browser = await puppeteer.launch({ headless: true});//,args: ['--proxy-server=35.185.196.38:3128'] 
     const page = await browser.newPage();
   
     // Aller sur Google
@@ -81,10 +81,10 @@ async function googleSearchProds(productUrl) {
   
     // Attendre que la page des résultats de recherche se charge
     await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 50000 });
-    //const itemprod = document.querySelectorAll('a');
+    /*const itemprod = document.querySelectorAll('a');
     const linkprod = document.querySelector('a') ?.href;
     console.log(linkprod);
-    await page.goto(linkprod);
+    await page.goto(linkprod);*/
   
     /* Extraire tous les liens des résultats de recherche
     const searchResults = await page.evaluate(() => {
