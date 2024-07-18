@@ -64,7 +64,7 @@ async function theivesSearchProds(productUrl){
     const page = await browser.newPage();
   
     // Aller sur Google
-    await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html');
+    await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
   
               // Sélecteur de la div avec la classe spécifique
                     const uiSelector = '.group.relative.z-0.flex.w-full.snap-center.flex-col.transition.lg\\:hover\\:scale-\\[1\\.01\\]';
