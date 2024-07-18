@@ -73,6 +73,7 @@ async function googleSearchProds(productUrl) {
   
     // Saisir l'URL du produit dans la barre de recherche
     await page.type('textarea[class="ant-input css-rwhs8m ant-input-outlined"]', aliexpressUrl);
+    console.log(productId);
   
     // Soumettre le formulaire de recherche
     //await page.keyboard.press('Enter');
@@ -90,12 +91,26 @@ async function googleSearchProds(productUrl) {
         await page.screenshot({ path: 'page.png' });
   
     // Attendre que la page des résultats de recherche se charge
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 50000 });
-    /*const itemprod = document.querySelectorAll('a');
-    const linkprod = document.querySelector('a') ?.href;
-    console.log(linkprod);
-    await page.goto(linkprod);*/
-  
+    //await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
+     // Attendre quelques secondes pour voir le résultat
+     await new Promise(resolve => setTimeout(resolve, 5000));
+            const itemprods = await page.evaluate(() => {
+              // Sélectionner tous les éléments de lien
+              const items = document.querySelectorAll('.row');
+              // Extraire les href des éléments sélectionnés
+              return Array.from(items).map(item => item.href);
+            });
+            
+            // Afficher tous les liens trouvés
+            console.log(itemprods);
+            
+            // Si vous voulez visiter le premier lien trouvé
+            if (itemprods.length > 0) {
+              const linkprod = itemprods[1];
+              console.log(linkprod);
+              await page.goto(linkprod);
+            }
+          
     /* Extraire tous les liens des résultats de recherche
     const searchResults = await page.evaluate(() => {
       const results = [];
@@ -115,7 +130,26 @@ async function googleSearchProds(productUrl) {
       }
     }*///search--picSearch--3aeyGeH|esm-upload-content--Jn-r24P
      // Extraire le contenu HTML complet de la page
-    
+
+      // Attendre quelques secondes pour voir le résultat
+      await new Promise(resolve => setTimeout(resolve, 7000));
+                  // Sélectionner les divs avec une classe spécifique et extraire les src des images
+                              const imageSrcs = await page.evaluate(() => {
+                                // Sélectionner toutes les divs avec la classe 'items'
+                                const divs = document.querySelectorAll('.slider--slider--uRpGJpg');
+                                // Extraire les src des images à l'intérieur de ces divs
+                                return Array.from(divs).map(div => {
+                                  const img = div.querySelector('img');
+                                  return img ? img.src : null;
+                                }).filter(src => src !== null); // Filtrer les null si aucune image n'est trouvée
+                              });
+
+                              // Afficher les src des images trouvées
+                              console.log(imageSrcs[0]); 
+                               // Si vous voulez visiter le premier lien trouvé
+                               await downloadImage(imageSrcs[0], imagePath);
+                                      
+                                
 
 
        // Sélecteur de l'élément à survoler (remplacez-le par le sélecteur correct)
