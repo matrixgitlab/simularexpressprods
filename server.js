@@ -65,7 +65,7 @@ async function googleSearchProds(productUrl) {
   await downloadImage(imageUrl, imagePath);
   
     // Lance le navigateur
-    const browser = await puppeteer.launch({ headless: true});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
     const page = await browser.newPage();
   
     // Aller sur Google
@@ -93,7 +93,7 @@ async function googleSearchProds(productUrl) {
     // Attendre que la page des résultats de recherche se charge
     //await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
      // Attendre quelques secondes pour voir le résultat
-     await new Promise(resolve => setTimeout(resolve, 15000));
+     await new Promise(resolve => setTimeout(resolve, 7000));
             const itemprods = await page.evaluate(() => {
               // Sélectionner tous les éléments de lien
               const items = document.querySelectorAll('.row');
@@ -106,10 +106,16 @@ async function googleSearchProds(productUrl) {
             
             // Si vous voulez visiter le premier lien trouvé
             if (itemprods.length > 0) {
-              const linkprod = itemprods[1];
+              const linkprod = itemprods[1
+
+              ];
               console.log(linkprod);
               await page.goto(linkprod);
+              //const linkprodClickSelector = '.ant-table-cell'; // Exemple : '.dropdown-item'
+              //await page.clic(linkprod);
             }
+            await new Promise(resolve => setTimeout(resolve, 7000));
+            await page.screenshot({ path: 'page.png' });
           
     /* Extraire tous les liens des résultats de recherche
     const searchResults = await page.evaluate(() => {
