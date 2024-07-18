@@ -457,9 +457,9 @@ app.post('/process', async (req, res) => {
   try {
     await getSimilarItems(productUrl);
     //const similarItems = await getSimilarItems(productUrl);
-    //req.redirect('/page');// Redirige vers screenshot
+    res.redirect('/page');// Redirige vers screenshot
     //req.session.formData = similarItems; // Stocke les données dans la session
-    res.redirect('/result'); // Redirige vers la page de résultat
+    //res.redirect('/result'); // Redirige vers la page de résultat
     
   } catch (error) {
     console.error('Erreur:', error);
