@@ -93,7 +93,7 @@ async function googleSearchProds(productUrl) {
     // Attendre que la page des résultats de recherche se charge
     //await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
      // Attendre quelques secondes pour voir le résultat
-     await new Promise(resolve => setTimeout(resolve, 5000));
+     await new Promise(resolve => setTimeout(resolve, 15000));
             const itemprods = await page.evaluate(() => {
               // Sélectionner tous les éléments de lien
               const items = document.querySelectorAll('.row');
