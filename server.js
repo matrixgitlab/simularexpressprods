@@ -45,12 +45,9 @@ app.get('/', (req, res) => {
         });
     }, distance);
 }
-
-//////////////////////////////////////////////////////////
-async function googleImgSearchProds(productUrl){
-  //z-0 aspect-square overflow-hidden rounded-t-lg transition lg:rounded-t-[15px] lg:hover:opacity-90
-  
-  
+////////////////////////////////////////////////////
+async function searchByImage(productUrl) {
+ 
     // URL du produit AliExpress
     const aliexpressUrl = productUrl;
     const productId = extractProductId(aliexpressUrl);
@@ -66,107 +63,142 @@ async function googleImgSearchProds(productUrl){
   
     // Aller sur Google
     await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
+    await page.screenshot({ path: 'page.png' });
+  //await browser.close();
+}
+
+//////////////////////////////////////////////////////
+async function dragAndDropImage(productUrl){
   
-              // Sélecteur de la div avec la classe spécifique
-                    //const uiSelector = '.group.relative.z-0.flex.w-full.snap-center.flex-col.transition.lg\\:hover\\:scale-\\[1\\.01\\]';
-                    const prodNameSelector = '.overflow-hidden.text-ellipsis.whitespace-nowrap.font-medium';
+  
+  // URL du produit AliExpress
+  const aliexpressUrl = productUrl;
+  const productId = extractProductId(aliexpressUrl);
 
-                    // Attendre que l'élément soit disponible et cliquer dessus
-                    await page.waitForSelector(prodNameSelector);
-                    const prodName = document.querySelector(prodNameSelector)?.innerText; 
+  if (!productId) {
+    console.error('Numéro de produit non trouvé dans l\'URL.');
+    return;
+  }
+  // URL de l'image à télécharger
+const imageUrl = 'https://ae01.alicdn.com/kf/S5f3456ed2ca24286bf4f31be998265093.jpg_80x80.jpg_.webp';
+const imagePath = path.resolve(__dirname, 'downloaded_image.png');
+// Télécharger l'image
+await downloadImage(imageUrl, imagePath);
 
-                    // Écouter l'événement d'ouverture d'une nouvelle page
-                    const [newPage] = await Promise.all([
-                      new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
-                      page.goto('http://www.google.com'),
-                    ]);
+  // Lance le navigateur
+  const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+  const page = await browser.newPage();
 
-                    // Attendre que la nouvelle page soit chargée
-                   // await newPage.waitForSelector('.some-element-in-new-page'); // Remplacez '.some-element-in-new-page' par un sélecteur approprié pour la nouvelle page
-            
-            await new Promise(resolve => setTimeout(resolve, 7000));
-            await newPage.screenshot({ path: 'page.png' });
+  // Aller à la page de recherche par image de Google Images
+  await page.goto('https://images.google.com');
 
-            //const imageSrc = document.querySelector('.aspect-square max-h-full w-full bg-white object-contain object-center ls-is-cached lazyloaded')?.src;
-          
+  // Cliquer sur l'icône de l'appareil photo pour la recherche par image
+  await page.click('.nDcEnd');
+
+  // Attendre que le bouton "Importer une image" soit visible et cliquer dessus
+  await page.waitForSelector('div[class="BH9rn"]');
+  
+  const targetSelector = 'div[data-ved="0CAwQlN4IahcKEwiwt4rTz7OHAxUAAAAAHQAAAAAQAg"]';
+
+  // Charger l'image localement
+  const imageBuffer = imagePath;
+
+  // Simuler l'événement de glisser-déposer
+  const dataTransfer = await page.evaluateHandle((imageBuffer, targetSelector) => {
+    const dataTransfer = new DataTransfer();
+    const file = new File([new Blob([imageBuffer], { type: 'image/png' })], 'image.png');
+    dataTransfer.items.add(file);
+
+    const dragEvent = new DragEvent('dragstart', { dataTransfer });
+    const dropEvent = new DragEvent('drop', { dataTransfer });
+
+    const targetElement = document.querySelector(targetSelector);
+    targetElement.dispatchEvent(dragEvent);
+    targetElement.dispatchEvent(dropEvent);
+
+    return dataTransfer;
+  }, imageBuffer, targetSelector);
+  
+  
+  
+  
+  
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
+
+  // Sélectionner le premier lien relatif à AliExpress
+  const aliexpressLinkSelector = 'a[href*="aliexpress.com"]';
+  await page.waitForSelector(aliexpressLinkSelector);
+
+  // Cliquer sur le premier lien relatif à AliExpress
+  const aliexpressLink = await page.$(aliexpressLinkSelector);
+  await aliexpressLink.click();
+
+    // Attendre quelques secondes pour voir le résultat
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+  // Prendre une capture d'écran de la page AliExpress
+  await page.screenshot({ path: 'aliexpress_results.png' });
+
+  // Fermer le navigateur
+  await browser.close();
+}
+//////////////////////////////////////////////////////////
+async function googleImgSearchProds(productUrl){
+  
+  
+    // URL du produit AliExpress
+    const aliexpressUrl = productUrl;
+    const productId = extractProductId(aliexpressUrl);
+  
+    if (!productId) {
+      console.error('Numéro de produit non trouvé dans l\'URL.');
+      return;
+    }
+    // URL de l'image à télécharger
+  const imageUrl = 'https://ae01.alicdn.com/kf/S5f3456ed2ca24286bf4f31be998265093.jpg_80x80.jpg_.webp';
+  const imagePath = path.resolve(__dirname, 'downloaded_image.png');
+  // Télécharger l'image
+  await downloadImage(imageUrl, imagePath);
+  
+    // Lance le navigateur
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const page = await browser.newPage();
+
+  
+    // Aller sur Google
+    await page.goto('https://ds.aliexpress.com/', { waitUntil: 'networkidle2', timeout: 50000 });
+  
+    // Saisir l'URL du produit dans la barre de recherche
+    console.log(productId);
+  
+    
+        // Enregistrer le contenu de la page dans un fichier texte
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await page.screenshot({ path: 'page.png' });
   
 
-      // Attendre quelques secondes pour voir le résultat
-      await new Promise(resolve => setTimeout(resolve, 7000));
-                  // Sélectionner les divs avec une classe spécifique et extraire les src des images
-                              const imageSrcs = await newPage.evaluate(() => {
-                                // Sélectionner toutes les divs avec la classe 'items'
-                               const divs = document.querySelectorAll('.slider--box--TJYmEtw');
-                                // Extraire les src des images à l'intérieur de ces divs
-                               return Array.from(divs).map(div => {
-                                 const img = div.querySelector('img');
-                                 return img ? img.src : null;
-                                }).filter(src => src !== null); // Filtrer les null si aucune image n'est trouvée
-                              });
+         // Sélecteur pour le bouton de téléchargement d'image
+        const uploadButtonSelector = 'button[data-autolog="key=searchByImage_button"]';
 
-                               // URL de l'image à télécharger
-                              console.log(imageSrcs); 
-                               // Afficher les src des images trouvées Si vous voulez visiter le premier lien trouvé
-                               const imagePath = path.resolve(__dirname, 'downloaded_image.png');
-                               await downloadImage(imageSrcs[0], imagePath);
-                                      
-                                
+            // Attendre que le bouton de téléchargement soit disponible et cliquer dessus
+            await page.waitForSelector(uploadButtonSelector);
+            const [fileChooser] = await Promise.all([
+              page.waitForFileChooser(),
+              page.click(uploadButtonSelector), // Déclenche le sélecteur de fichiers
+            ]);
+             console.log([imagePath]);
+            // Télécharger l'image
+            await fileChooser.accept([imagePath]);
+                                 
+               // Attendre quelques secondes pour que la recherche se termine
+               await new Promise(resolve => setTimeout(resolve, 5000));
 
+              // Prendre une capture d'écran des résultats
+              await page.screenshot({ path: 'results.png' });
 
-       // Sélecteur de l'élément à survoler (remplacez-le par le sélecteur correct)
-                const hoverSelector = '.search--picSearch--3aeyGeH'; // Exemple : '.btn-hover'
-
-                // Survoler l'élément
-                await newPage.waitForSelector(hoverSelector);
-                await newPage.hover(hoverSelector);
-
-                // Attendre que le sélecteur s'affiche (remplacez-le par le sélecteur correct de l'élément affiché)
-                const dropdownSelector = '.esm--upload-content--Jn-r24P'; // Exemple : '.dropdown-menu'
-                await newPage.waitForSelector(dropdownSelector);
-
-                // Sélecteur de la zone de recherche par image (remplacez-le par le sélecteur correct)
-                const dropZoneSelector = '.esm--upload-content--Jn-r24P'; // Exemple : '.drop-zone'
-
-                // Fonction pour simuler le glisser-déposer
-                      async function simulateDragAndDrop(page, filePath, dropZoneSelector) {
-                        const input = await newPage.evaluateHandle(dropZoneSelector => {
-                          const input = document.createElement('input');
-                          input.type = 'file';
-                          input.style.display = 'none';
-                          document.body.appendChild(input);
-                          return input;
-                        }, dropZoneSelector);
-
-                        await input.uploadFile(filePath);
-
-                        await newPage.evaluate((dropZoneSelector, input) => {
-                          const dataTransfer = new DataTransfer();
-                          dataTransfer.items.add(input.files[0]);
-
-                          const event = new DragEvent('drop', {
-                            bubbles: true,
-                            cancelable: true,
-                            dataTransfer: dataTransfer,
-                          });
-
-                          const dropZone = document.querySelector(dropZoneSelector);
-                          dropZone.dispatchEvent(event);
-                        }, dropZoneSelector, input);
-                      }
-
-                    // Simuler le glisser-déposer de l'image
-                    await simulateDragAndDrop(page, imagePath, dropZoneSelector);
-
-                // Attendre quelques secondes pour voir le résultat
-                  await new Promise(resolve => setTimeout(resolve, 5000));
-
-
-     
-        // Prendre une capture d'écran de la page du produit
-        await newPage.screenshot({ path: 'page.png' });
-  
-    // Fermer le navigateur
-    await browser.close();
+              // Fermer le navigateur
+              await browser.close();
  
 }
 /////////////////////////////////////////////////////////////////////
@@ -490,7 +522,10 @@ async function googleSearchProds(productUrl) {
 async function getSimilarItems(productUrl) {
 
   //await googleSearchProds(productUrl);
-  await theivesSearchProds(productUrl);
+  //await theivesSearchProds(productUrl);
+  //await googleImgSearchProds(productUrl);
+  //await dragAndDropImage(productUrl);
+  await searchByImage(productUrl);
  
 }
 /////////////////////////////////////////////////////////////
