@@ -192,15 +192,16 @@ async function theivesSearchProds(productUrl){
   
     // Aller sur Google
     await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
-  
+    await page.screenshot({ path: 'page.png' });
+
               // Sélecteur de la div avec la classe spécifique
                     const divImgs = '.group.relative.opacity-100';
 
 
                     // Attendre que l'élément soit disponible et cliquer dessus
                     await page.waitForSelector(divImgs);
-
-
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                    await page.screenshot({ path: 'page.png' });
 
                      // Sélectionner les divs avec une classe spécifique et extraire les src des images
                      const imageSrcs = await page.evaluate(() => {
