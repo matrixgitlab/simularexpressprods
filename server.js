@@ -63,9 +63,45 @@ async function searchByImage(productUrl) {
   
     // Aller sur Google
     await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    
     await page.screenshot({ path: 'page.png' });
-  //await browser.close();
+
+     // Sélecteur de la div avec la classe spécifique
+     const divImgs = '.group.relative.opacity-100';
+
+
+     // Attendre que l'élément soit disponible et cliquer dessus
+     await page.waitForSelector(divImgs);
+     await page.screenshot({ path: 'page.png' });
+
+      // Sélectionner les divs avec une classe spécifique et extraire les src des images
+      const imageSrcs = await page.evaluate(() => {
+       // Sélectionner toutes les divs avec la classe 'items'
+      const divs = document.querySelectorAll('.group.relative.opacity-100');
+       // Extraire les src des images à l'intérieur de ces divs
+      return Array.from(divs).map(div => {
+        const img = div.querySelector('img');
+        return img ? img.src : null;
+       }).filter(src => src !== null); // Filtrer les null si aucune image n'est trouvée
+     });
+
+      // URL de l'image à télécharger
+     console.log(imageSrcs); 
+      // Afficher les src des images trouvées Si vous voulez visiter le premier lien trouvé
+      const imagePath = path.resolve(__dirname, 'downloaded_image.png');
+      await downloadImage(imageSrcs[0], imagePath);
+
+     // Écouter l'événement d'ouverture d'une nouvelle page
+     //const [newPage] = await Promise.all([
+      // new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
+       //page.goto('https://www.aliexpress.com/'),
+     //]);
+
+     // Attendre que la nouvelle page soit chargée
+    // await newPage.waitForSelector('.some-element-in-new-page'); // Remplacez '.some-element-in-new-page' par un sélecteur approprié pour la nouvelle page
+
+await page.screenshot({ path: 'page.png' });
+  await browser.close();
 }
 
 //////////////////////////////////////////////////////
