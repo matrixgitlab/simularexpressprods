@@ -45,8 +45,9 @@ app.get('/', (req, res) => {
         });
     }, distance);
 }
+
 //////////////////////////////////////////////////////////
-async function theivesSearchProds(productUrl){
+async function googleImgSearchProds(productUrl){
   //z-0 aspect-square overflow-hidden rounded-t-lg transition lg:rounded-t-[15px] lg:hover:opacity-90
   
   
@@ -67,15 +68,17 @@ async function theivesSearchProds(productUrl){
     await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
   
               // Sélecteur de la div avec la classe spécifique
-                    const uiSelector = '.group.relative.z-0.flex.w-full.snap-center.flex-col.transition.lg\\:hover\\:scale-\\[1\\.01\\]';
+                    //const uiSelector = '.group.relative.z-0.flex.w-full.snap-center.flex-col.transition.lg\\:hover\\:scale-\\[1\\.01\\]';
+                    const prodNameSelector = '.overflow-hidden.text-ellipsis.whitespace-nowrap.font-medium';
 
                     // Attendre que l'élément soit disponible et cliquer dessus
-                    await page.waitForSelector(uiSelector);
+                    await page.waitForSelector(prodNameSelector);
+                    const prodName = document.querySelector(prodNameSelector)?.innerText; 
 
                     // Écouter l'événement d'ouverture d'une nouvelle page
                     const [newPage] = await Promise.all([
                       new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
-                      page.click(uiSelector),
+                      page.goto('http://www.google.com'),
                     ]);
 
                     // Attendre que la nouvelle page soit chargée
@@ -166,7 +169,136 @@ async function theivesSearchProds(productUrl){
     await browser.close();
  
 }
+/////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////
+async function theivesSearchProds(productUrl){
+  //z-0 aspect-square overflow-hidden rounded-t-lg transition lg:rounded-t-[15px] lg:hover:opacity-90
+  
+  
+    // URL du produit AliExpress
+    const aliexpressUrl = productUrl;
+    const productId = extractProductId(aliexpressUrl);
+  
+    if (!productId) {
+      console.error('Numéro de produit non trouvé dans l\'URL.');
+      return;
+    }
+
+    // Lance le navigateur
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const page = await browser.newPage();
+  
+    // Aller sur Google
+    await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
+  
+              // Sélecteur de la div avec la classe spécifique
+                    const divImgs = '.group.relative.opacity-100';
+
+
+                    // Attendre que l'élément soit disponible et cliquer dessus
+                    await page.waitForSelector(divImgs);
+
+
+
+                     // Sélectionner les divs avec une classe spécifique et extraire les src des images
+                     const imageSrcs = await page.evaluate(() => {
+                      // Sélectionner toutes les divs avec la classe 'items'
+                     const divs = document.querySelectorAll('.group.relative.opacity-100');
+                      // Extraire les src des images à l'intérieur de ces divs
+                     return Array.from(divs).map(div => {
+                       const img = div.querySelector('img');
+                       return img ? img.src : null;
+                      }).filter(src => src !== null); // Filtrer les null si aucune image n'est trouvée
+                    });
+
+                     // URL de l'image à télécharger
+                    console.log(imageSrcs); 
+                     // Afficher les src des images trouvées Si vous voulez visiter le premier lien trouvé
+                     const imagePath = path.resolve(__dirname, 'downloaded_image.png');
+                     await downloadImage(imageSrcs[0], imagePath);
+
+                    // Écouter l'événement d'ouverture d'une nouvelle page
+                    //const [newPage] = await Promise.all([
+                     // new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
+                      page.goto('https://www.aliexpress.com/'),
+                    //]);
+
+                    // Attendre que la nouvelle page soit chargée
+                   // await newPage.waitForSelector('.some-element-in-new-page'); // Remplacez '.some-element-in-new-page' par un sélecteur approprié pour la nouvelle page
+            
+            await new Promise(resolve => setTimeout(resolve, 7000));
+            await page.screenshot({ path: 'page.png' });
+
+            //const imageSrc = document.querySelector('.aspect-square max-h-full w-full bg-white object-contain object-center ls-is-cached lazyloaded')?.src;
+          
+  
+
+      // Attendre quelques secondes pour voir le résultat
+      await new Promise(resolve => setTimeout(resolve, 7000));
+                 
+                                      
+                                
+
+
+       // Sélecteur de l'élément à survoler (remplacez-le par le sélecteur correct)
+                const hoverSelector = '.search--picSearch--3aeyGeH'; // Exemple : '.btn-hover'
+
+                // Survoler l'élément
+                await page.waitForSelector(hoverSelector);
+                await page.hover(hoverSelector);
+
+                // Attendre que le sélecteur s'affiche (remplacez-le par le sélecteur correct de l'élément affiché)
+                const dropdownSelector = '.esm--upload-content--Jn-r24P'; // Exemple : '.dropdown-menu'
+                await page.waitForSelector(dropdownSelector);
+
+                // Sélecteur de la zone de recherche par image (remplacez-le par le sélecteur correct)
+                const dropZoneSelector = '.esm--upload-content--Jn-r24P'; // Exemple : '.drop-zone'
+
+                // Fonction pour simuler le glisser-déposer
+                      async function simulateDragAndDrop(page, filePath, dropZoneSelector) {
+                        const input = await page.evaluateHandle(dropZoneSelector => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.style.display = 'none';
+                          document.body.appendChild(input);
+                          return input;
+                        }, dropZoneSelector);
+
+                        await input.uploadFile(filePath);
+
+                        await page.evaluate((dropZoneSelector, input) => {
+                          const dataTransfer = new DataTransfer();
+                          dataTransfer.items.add(input.files[0]);
+
+                          const event = new DragEvent('drop', {
+                            bubbles: true,
+                            cancelable: true,
+                            dataTransfer: dataTransfer,
+                          });
+
+                          const dropZone = document.querySelector(dropZoneSelector);
+                          dropZone.dispatchEvent(event);
+                        }, dropZoneSelector, input);
+                      }
+
+                    // Simuler le glisser-déposer de l'image
+                    await simulateDragAndDrop(page, imagePath, dropZoneSelector);
+
+                // Attendre quelques secondes pour voir le résultat
+                  await new Promise(resolve => setTimeout(resolve, 5000));
+
+
+     
+        // Prendre une capture d'écran de la page du produit
+        await page.screenshot({ path: 'page.png' });
+  
+    // Fermer le navigateur
+    await browser.close();
+ 
+}
+/////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////
