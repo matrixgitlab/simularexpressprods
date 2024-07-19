@@ -63,6 +63,7 @@ async function searchByImage(productUrl) {
   
     // Aller sur Google
     await page.goto('https://thieve.co/tools/suppliers-search?productUrl=https://www.aliexpress.com/item/'+productId+'.html', { waitUntil: 'networkidle2', timeout: 50000 });
+    await new Promise(resolve => setTimeout(resolve, 5000));
     await page.screenshot({ path: 'page.png' });
   //await browser.close();
 }
