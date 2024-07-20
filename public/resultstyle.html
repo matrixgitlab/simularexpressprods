@@ -1,0 +1,490 @@
+<html><head>
+  <title>ThriftCrafter - Handmade & Vintage Items (Responsive with Hover Effects)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #f1641e;
+      --secondary-color: #222222;
+      --background-color: #f5f5f5;
+      --text-color: #222222;
+      --card-bg-color: #ffffff;
+      --border-color: #e1e3df;
+      --price-color: #222222;
+      --hover-color: #f1641e;
+      --button-bg: #f1641e;
+      --button-text: #ffffff;
+      --button-hover-bg: #e74d1a;
+    }
+  
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+  
+    body {
+      font-family: 'Graphik Webfont', -apple-system, BlinkMacSystemFont, 'Roboto', 'Droid Sans', 'Segoe UI', 'Helvetica', Arial, sans-serif;
+      line-height: 1.4;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      flex-grow: 1;
+    }
+  
+    header {
+      background-color: var(--card-bg-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+  
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+  
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+  
+    .search-bar {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      margin: 0 1rem;
+    }
+  
+    .search-input {
+      padding: 0.5rem;
+      border: 2px solid var(--border-color);
+      border-radius: 96px;
+      width: 100%;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+  
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.2);
+    }
+  
+    h1 {
+      font-size: 1.75rem;
+      margin: 1rem 0;
+      color: var(--secondary-color);
+      text-align: center;
+    }
+  
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+  
+    .product-card {
+      background-color: var(--card-bg-color);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+  
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+  
+    .product-card-info {
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .product-card-title {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+      line-height: 1.4;
+      font-weight: 600;
+    }
+  
+    .product-card-shop {
+      font-size: 0.875rem;
+      color: #595959;
+      margin-bottom: 0.5rem;
+    }
+  
+    .product-card-price {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--price-color);
+      margin-top: auto;
+    }
+  
+    .product-card-rating {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      color: #595959;
+      margin-top: 0.5rem;
+    }
+  
+    .stars {
+      color: #ffc107;
+      margin-right: 0.25rem;
+    }
+  
+    .product-card-buttons {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  
+    .product-card:hover .product-card-buttons {
+      opacity: 1;
+    }
+  
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 0.875rem;
+    }
+  
+    .btn-primary {
+      background-color: var(--button-bg);
+      color: var(--button-text);
+    }
+  
+    .btn-primary:hover {
+      background-color: var(--button-hover-bg);
+    }
+  
+    .btn-secondary {
+      background-color: var(--card-bg-color);
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+  
+    .btn-secondary:hover {
+      background-color: var(--primary-color);
+      color: var(--button-text);
+    }
+  
+    footer {
+      background-color: var(--card-bg-color);
+      color: var(--text-color);
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 2rem;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    }
+  
+    @media (max-width: 1200px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  
+    @media (max-width: 900px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  
+    @media (max-width: 600px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+  
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+  
+      .logo {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+  
+      .search-bar {
+        margin: 0;
+      }
+  
+      .product-card-buttons {
+        opacity: 1;
+        position: static;
+        background: none;
+        padding-top: 0;
+      }
+    }
+  </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo">ThriftCrafter</div>
+        <div class="search-bar">
+          <input type="text" class="search-input" placeholder="Search for anything">
+        </div>
+      </div>
+    </header>
+  
+    <div class="container">
+      <h1>Handmade & Vintage Treasures</h1>
+      
+      <div class="product-grid" id="prod-grid">
+        <!--div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/vintage-camera.jpg" alt="Vintage Camera" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Vintage 1960s Polaroid Land Camera</h3>
+            <p class="product-card-shop">RetroFinds</p>
+            <p class="product-card-price">$89.99</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★★</span> (152)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/macrame-plant-hanger.jpg" alt="Macrame Plant Hanger" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Handmade Macrame Plant Hanger</h3>
+            <p class="product-card-shop">BohoChicCrafts</p>
+            <p class="product-card-price">$34.50</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★☆</span> (89)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/wooden-cutting-board.jpg" alt="Wooden Cutting Board" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Handcrafted Walnut Wood Cutting Board</h3>
+            <p class="product-card-shop">RusticKitchenware</p>
+            <p class="product-card-price">$59.99</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★★</span> (210)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/ceramic-mug.jpg" alt="Ceramic Mug" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Handmade Ceramic Mug - Ocean Breeze</h3>
+            <p class="product-card-shop">ClayArtisanStudio</p>
+            <p class="product-card-price">$28.00</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★☆</span> (75)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/vintage-typewriter.jpg" alt="Vintage Typewriter" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">1950s Smith-Corona Typewriter</h3>
+            <p class="product-card-shop">VintageWritingTools</p>
+            <p class="product-card-price">$149.99</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★★</span> (38)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/knitted-blanket.jpg" alt="Knitted Blanket" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Hand-Knitted Chunky Wool Blanket</h3>
+            <p class="product-card-shop">CozyKnitsAndMore</p>
+            <p class="product-card-price">$129.00</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★★</span> (156)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/leather-journal.jpg" alt="Leather Journal" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Handmade Leather-Bound Journal</h3>
+            <p class="product-card-shop">ArtisanLeatherworks</p>
+            <p class="product-card-price">$45.99</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★☆</span> (92)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div>
+  
+        <div class="product-card">
+          <img src="https://fake-images.thriftcrafter.com/stained-glass.jpg" alt="Stained Glass Suncatcher" width="250" height="200">
+          <div class="product-card-info">
+            <h3 class="product-card-title">Handcrafted Stained Glass Suncatcher</h3>
+            <p class="product-card-shop">RainbowGlassArt</p>
+            <p class="product-card-price">$39.50</p>
+            <div class="product-card-rating">
+              <span class="stars">★★★★★</span> (64)
+            </div>
+          </div>
+          <div class="product-card-buttons">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-secondary">Ask to Buy</button>
+          </div>
+        </div-->
+      </div>
+    </div>
+  
+    <footer>
+      <p>&copy; 2023 ThriftCrafter. All rights reserved. | Handmade with love, inspired by Etsy</p>
+    </footer>
+  
+    <script>
+      document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          if (!e.target.classList.contains('btn')) {
+            alert('Viewing product details...');
+          }
+        });
+      });
+  
+      document.querySelectorAll('.btn-primary').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          alert('Proceeding to checkout...');
+        });
+      });
+  
+      document.querySelectorAll('.btn-secondary').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          alert('Sending a message to the seller...');
+        });
+      });
+  
+      document.querySelector('.search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          alert('Searching for: ' + this.value);
+        }
+      });
+    </script>
+    <script>
+      // Faire une requête pour obtenir les données de la session
+      fetch('/get-data')
+          .then(response => {
+                      if (!response.ok) {
+                           throw new Error(`Erreur HTTP! Statut : ${response.status}`);
+                       }
+                       return response.json();
+           })
+           .then(data => {
+            if (data && data.length > 0) {
+            const prodGrid = document.getElementById('prod-grid');
+
+              data.forEach(product => {
+               const div = document.createElement('div');
+
+               div.innerHTML = `
+                    <div class="product-card">
+                      <img src="${product.img}" alt="Macrame Plant Hanger" width="70" height="70">
+                      <div class="product-card-info">
+                        <h3 class="product-card-title">${product.title}</h3>
+                        <p class="product-card-shop">BohoChicCrafts</p>
+                        <p class="product-card-price">$34.50</p>
+                        <div class="product-card-rating">
+                          <span class="stars">★★★★☆</span> (89)
+                        </div>
+                      </div>
+                      <div class="product-card-buttons">
+                        <button class="btn btn-primary">Buy Now</button>
+                        <button class="btn btn-secondary">Ask to Buy</button>
+                      </div>
+                    </div>
+               
+               `;
+               prodGrid.appendChild(div); 
+               
+              });
+            } else {
+                   document.getElementById('details').textContent = 'No details submitted';
+               }
+          })
+          .catch(error => console.error('Error fetching the data:', error));
+  </script>
+
+
+
+
+  </body></html>

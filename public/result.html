@@ -182,7 +182,9 @@
                 <th>Action</th>
               </tr>
             </thead>
+
             <tbody id="product-tbody">
+              <div id="theives-style" class="grid grid-cols-2 gap-3 lg:grid-cols-[repeat(auto-fill,minmax(15.625rem,1fr))] lg:gap-6">
               <!--tr>
                 <td>
                   <img src="https://fake-images.thriftcrafter.com/smartwatch-x3pro.jpg" alt="Smart Watch X3 Pro" class="product-image" width="100" height="100">
@@ -302,6 +304,7 @@
                 <td>IP68</td>
                 <td><a href="#" class="buy-button">Buy Now</a></td>
               </tr-->
+            </div>
             </tbody>
           </table>
         </div>
@@ -324,7 +327,20 @@
                         return response.json();
             })
             .then(data => {
-            
+               data.forEach(product => {
+                const thieveS = document.getElementById('theives-style');
+                const div = document.createElement('div');
+
+                div.innerHTML = product.prods;
+                thieveS.appendChild(div); 
+                
+               });
+           })
+           .catch(error => console.error('Error fetching the data:', error));
+   </script>
+    </body></html>
+
+    <!--
                if (data && data.length > 0) {
                    const tbody = document.getElementById('product-tbody');
                    data.forEach(product => {
@@ -339,7 +355,7 @@
                            `<td class="product-price">${product.price}</td>
                            <td>
                                <div class="rating">
-                                   <!--span class="stars">${'★'.repeat(product.reviews)}${'☆'.repeat(5 - product.reviews)}</span-->
+                                   <!span class="stars">${'★'.repeat(product.reviews)}${'☆'.repeat(5 - product.reviews)}</span>
                                    ${product.reviews}
                                </div>
                            </td>
@@ -357,8 +373,4 @@
                    });
                } else {
                    document.getElementById('details').textContent = 'No details submitted';
-               }
-           })
-           .catch(error => console.error('Error fetching the data:', error));
-   </script>
-    </body></html>
+               }-->

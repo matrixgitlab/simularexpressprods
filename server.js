@@ -82,33 +82,32 @@ async function searchByImage(productUrl) {
      await page.screenshot({ path: 'page.png' });
 
       // Sélectionner les divs avec une classe spécifique et extraire les src des images
-      const imageSrcs = await page.evaluate(() => {
+      const similarItems = await page.evaluate(() => {
        // Sélectionner toutes les divs avec la classe 'items'
       const divs = document.querySelectorAll('.group.relative.opacity-100');
-       // Extraire les src des images à l'intérieur de ces divs
-      return Array.from(divs).map(div => {
-        const img = div.querySelector('img');
-        return img ? img.src : null;
-       }).filter(src => src !== null); // Filtrer les null si aucune image n'est trouvée
-     });
+        // Extraire les src des images à l'intérieur de ces divs
+         return Array.from(divs).map(div => {
+                    const img = div.querySelector('img')?.src || null;
+                    const title = div.querySelector('.overflow-hidden.text-ellipsis.whitespace-nowrap.font-medium')?.innerHTML || null;
+                    return {img, title};
+
+                  })//.filter(src => src !== null);  Filtrer les null si aucune image n'est trouvée
+       
+
+
+        });
 
       // URL de l'image à télécharger
-     console.log(imageSrcs); 
       // Afficher les src des images trouvées Si vous voulez visiter le premier lien trouvé
-      const imagePath = path.resolve(__dirname, 'downloaded_image.png');
-      await downloadImage(imageSrcs[0], imagePath);
+      //const imagePath = path.resolve(__dirname, 'downloaded_image.png');
+      //await downloadImage(imageSrcs.img[0], imagePath);
 
-     // Écouter l'événement d'ouverture d'une nouvelle page
-     //const [newPage] = await Promise.all([
-      // new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
-       //page.goto('https://www.aliexpress.com/'),
-     //]);
-
+     
      // Attendre que la nouvelle page soit chargée
-    // await newPage.waitForSelector('.some-element-in-new-page'); // Remplacez '.some-element-in-new-page' par un sélecteur approprié pour la nouvelle page
 
-await page.screenshot({ path: 'page.png' });
+  await page.screenshot({ path: 'page.png' });
   await browser.close();
+  return similarItems;
 }
 
 //////////////////////////////////////////////////////
@@ -569,7 +568,9 @@ async function getSimilarItems(productUrl) {
   //await theivesSearchProds(productUrl);
   //await googleImgSearchProds(productUrl);
   //await dragAndDropImage(productUrl);
-  await searchByImage(productUrl);
+  const similarItems = await searchByImage(productUrl);
+  return similarItems; 
+
  
 }
 /////////////////////////////////////////////////////////////
@@ -667,11 +668,12 @@ app.post('/process', async (req, res) => {
   console.log('Received URL:', productUrl);
 
   try {
-    await getSimilarItems(productUrl);
-    //const similarItems = await getSimilarItems(productUrl);
-    res.redirect('/page');// Redirige vers screenshot
-    //req.session.formData = similarItems; // Stocke les données dans la session
-    //res.redirect('/result'); // Redirige vers la page de résultat
+    //await getSimilarItems(productUrl);
+    const similarItems = await getSimilarItems(productUrl);
+    //res.redirect('/page');// Redirige vers screenshot
+    console.log(similarItems); 
+    req.session.formData = similarItems; // Stocke les données dans la session
+    res.redirect('/result'); // Redirige vers la page de résultat
     
   } catch (error) {
     console.error('Erreur:', error);
@@ -685,8 +687,8 @@ app.post('/process', async (req, res) => {
 ///////////////////Route pour afficher la page de résultat
 app.get('/result', (req, res) => {
   if (req.session.formData) {
-      res.sendFile(path.join(__dirname, 'public', 'result.html'));
-      req.redirect('/page');
+      res.sendFile(path.join(__dirname, 'public', 'resultstyle.html'));
+      //res.redirect('/result');
   } else {
       res.redirect('/');
   }
