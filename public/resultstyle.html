@@ -63,7 +63,15 @@
       font-weight: bold;
       color: var(--primary-color);
     }
-  
+    
+    a {
+        all: unset; /* Réinitialise tous les styles */
+        display: inline; /* Remet en place le comportement inline par défaut */
+        color: inherit; /* Hérite de la couleur du texte environnant */
+        text-decoration: none; /* Enlève la décoration du texte */
+        cursor: pointer; /* Définit le curseur de souris */
+      }
+
     .search-bar {
       display: flex;
       align-items: center;
@@ -469,7 +477,7 @@
                         </div-->
                       </div>
                       <div class="product-card-buttons">
-                        <button class="btn btn-primary"><a href="${product.link}"></a>Buy Now</button>
+                        <button class="btn btn-primary"><a href="${product.link}">Buy Now</a></button>
                         <button class="btn btn-secondary">Ask to Buy</button>
                       </div>
                     </div>
