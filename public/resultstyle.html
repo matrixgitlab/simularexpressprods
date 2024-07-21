@@ -9,7 +9,7 @@
       --text-color: #222222;
       --card-bg-color: #ffffff;
       --border-color: #e1e3df;
-      --price-color: #222222;
+      --price-color: #b34c4c;
       --hover-color: #f1641e;
       --button-bg: #f1641e;
       --button-text: #ffffff;
@@ -117,13 +117,14 @@
   
     .product-card img {
       width: 100%;
-      height: 200px;
+      height: 50%;
+      
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.9s ease;
     }
   
     .product-card:hover img {
-      transform: scale(1.05);
+      transform: scale(0.95);
     }
   
     .product-card-info {
@@ -274,7 +275,7 @@
     </header>
   
     <div class="container">
-      <h1>Handmade & Vintage Treasures</h1>
+      <h1>Aliexpress Similar Products</h1>
       
       <div class="product-grid" id="prod-grid">
         <!--div class="product-card">
@@ -461,14 +462,14 @@
                       <img src="${product.img}" alt="Macrame Plant Hanger" width="70" height="70">
                       <div class="product-card-info">
                         <h3 class="product-card-title">${product.title}</h3>
-                        <p class="product-card-shop">BohoChicCrafts</p>
-                        <p class="product-card-price">$34.50</p>
-                        <div class="product-card-rating">
+                        <!--p class="product-card-shop">BohoChicCrafts</p-->
+                        <p class="product-card-price">${product.price}</p>
+                        <!--div class="product-card-rating">
                           <span class="stars">★★★★☆</span> (89)
-                        </div>
+                        </div-->
                       </div>
                       <div class="product-card-buttons">
-                        <button class="btn btn-primary">Buy Now</button>
+                        <button class="btn btn-primary"><a href="${product.link}"></a>Buy Now</button>
                         <button class="btn btn-secondary">Ask to Buy</button>
                       </div>
                     </div>
