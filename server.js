@@ -9,6 +9,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { waitForDebugger } = require('inspector');
 const url = require('url');
+const { fetchFinalUrl } = require('./fetchFinalUrl');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -51,17 +52,25 @@ async function searchByImage(productUrl) {
  
     // URL du produit AliExpress
     const aliexpressUrl = productUrl;
-    const productId = extractProductId(aliexpressUrl);
+    const productidcheck = extractProductId(aliexpressUrl) ? extractProductId(aliexpressUrl) : extractInfo(aliexpressUrl).url;
+    console.log(productidcheck);
   
-    if (!productId) {
+    if (!productidcheck) {
       console.error('Numéro de produit non trouvé dans l\'URL.');
       return;
     }
 
+    if (extractProductId(aliexpressUrl)){
+      const productId = await extractProductId(aliexpressUrl);
+      //const testurl = await fetchFinalUrl(productidcheck);
+    console.log("voir idurl cherche par la fonction fetchfinalurl : ", productId );
+    
+     
+
     // Lance le navigateur
-    const browser = await puppeteer.launch({ headless: true});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
     const page = await browser.newPage();
-  
+   
     // Aller sur Google
     await page.goto('https://thieve.co/tools/suppliers-search', { waitUntil: 'networkidle2', timeout: 50000 });
     
@@ -108,6 +117,70 @@ async function searchByImage(productUrl) {
   await page.screenshot({ path: 'page.png' });
   await browser.close();
   return similarItems;
+      
+    }else if (!extractProductId(aliexpressUrl)){
+      const productId = await fetchFinalUrl(productidcheck);
+      //const testurl = await fetchFinalUrl(productidcheck);
+    console.log("voir idurl cherche par la fonction fetchfinalurl : ", productId );
+    
+     
+
+    // Lance le navigateur
+    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const page = await browser.newPage();
+   
+    // Aller sur Google
+    await page.goto('https://thieve.co/tools/suppliers-search', { waitUntil: 'networkidle2', timeout: 50000 });
+    
+    // Utiliser un sélecteur plus simple si possible
+    await page.waitForSelector('input[placeholder="https://www.aliexpress.com/item/4000414708937.html"]');
+
+    await page.type('input[placeholder="https://www.aliexpress.com/item/4000414708937.html"]', 'https://www.aliexpress.com/item/'+productId+'.html');
+
+     // Soumettre le formulaire de recherche
+    await page.keyboard.press('Enter');
+    await page.screenshot({ path: 'page.png' });
+
+     // Sélecteur de la div avec la classe spécifique
+     const divImgs = '.group.relative.opacity-100';
+
+
+     // Attendre que l'élément soit disponible et cliquer dessus
+     await page.waitForSelector(divImgs);
+     await page.screenshot({ path: 'page.png' });
+
+      // Sélectionner les divs avec une classe spécifique et extraire les src des images
+      const similarItems = await page.evaluate(() => {
+       // Sélectionner toutes les divs avec la classe 'items'
+      const divs = document.querySelectorAll('.group.relative.opacity-100');
+        // Extraire les src des images à l'intérieur de ces divs
+         return Array.from(divs).map(div => {
+                    const img = div.querySelector('img')?.src || null;
+                    const title = div.querySelector('.overflow-hidden.text-ellipsis.whitespace-nowrap.font-medium')?.innerHTML || null;
+                    const price = div.querySelector('.font-semibold')?.innerText || null;
+                    //get link of aliexpress
+                    const fullUrl = div.querySelector('a')?.href || null;
+                    const parsedUrl = new URL(fullUrl);
+                    const link = parsedUrl.searchParams.get('productUrl');
+
+                    return {img, title, price, link};
+
+                  })
+
+        });
+
+     
+     // Attendre que la nouvelle page soit chargée
+
+  await page.screenshot({ path: 'page.png' });
+  await browser.close();
+  return similarItems;
+    }else{
+      return;
+    }
+
+
+    
 }
 
 //////////////////////////////////////////////////////
@@ -201,13 +274,35 @@ function extractProductId(url) {
   return match ? match[1] : null;
 }
 
+function extractInfo(text) {
+  const urlRegex = /(https:\/\/a\.aliexpress\.com\/\S+)/;
+  const priceRegex = /MAD\d+(\.\d{2})?/;
+  const discountRegex = /\d+% de réduction/;
+
+  const urlMatch = text.match(urlRegex);
+  const priceMatch = text.match(priceRegex);
+  const discountMatch = text.match(discountRegex);
+
+  const url = urlMatch ? urlMatch[0] : null;
+  const price = priceMatch ? priceMatch[0] : null;
+  const discount = discountMatch ? discountMatch[0] : null;
+
+  // Extraire la description
+  const descriptionStart = text.indexOf(" | ") + 3;
+  const descriptionEnd = text.indexOf(" https://a.aliexpress.com/");
+  const description = text.substring(descriptionStart, descriptionEnd);
+
+  return {
+    url,
+    price,
+    discount,
+    description
+  };
+}
+
 
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
-
-
-
-
 
