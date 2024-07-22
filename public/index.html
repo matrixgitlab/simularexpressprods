@@ -292,6 +292,27 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }*/
+        /* Style pour le conteneur du message d'erreur */
+                .error-message {
+                background-color: #f8d7da; /* Couleur de fond rouge pâle */
+                color: #721c24; /* Couleur du texte rouge foncé */
+                padding: 15px; /* Espacement interne */
+                margin: 10px 0; /* Espacement externe */
+                border: 1px solid #f5c6cb; /* Bordure rouge pâle */
+                border-radius: 5px; /* Bordure arrondie */
+                font-family: Arial, sans-serif; /* Police de caractères */
+                font-size: 14px; /* Taille de la police */
+                display: flex; /* Flexbox pour aligner les éléments */
+                align-items: center; /* Centrer verticalement */
+                }
+
+                .error-message .icon {
+                margin-right: 10px; /* Espacement à droite de l'icône */
+                }
+
+                .error-message .text {
+                flex-grow: 1; /* Prendre tout l'espace restant */
+                }
 
     </style>
     
@@ -301,7 +322,7 @@
     <div id="overlay"></div>
     <header>
         <div class="container">
-            <h1 class="logo">ThriftCrafter</h1>
+            <h1 class="logo">ExpressLooUp</h1>
             <p class="tagline">Elevate Your AliExpress Shopping Experience</p>
         </div>
     </header>
@@ -312,6 +333,9 @@
                 <input type="text" name="url" class="search-input" placeholder="Paste AliExpress product URL here" required>
                 <button type="submit" class="search-button" id="analyze-button">Analyze Product</button>
             </form>
+            <div id="url-error">
+                
+            </div>
             <!-- Animation de chargement -->
             <div id="loading">
                 <div class="spinner"></div>
@@ -418,6 +442,40 @@
                 alert('Données extraites et page suivante chargée.');
             }, 3000); // Modifier la durée selon vos besoins
         });
+    </script>
+    <script>
+        // Faire une requête pour obtenir les données de la session
+        fetch('/get-data')
+            .then(response => {
+                        if (!response.ok) {
+                             throw new Error(`Erreur HTTP! Statut : ${response.status}`);
+                         }
+                         return response.json();
+             })
+             .then(data => {
+              
+              const urlerror = document.getElementById('url-error');
+  
+                
+                 const div = document.createElement('div');
+  
+                 div.innerHTML = `
+                    <div class="error-message">
+                <div class="icon">
+                  <!-- Vous pouvez utiliser une icône SVG ou un emoji ici -->
+                  ⚠️
+                </div>
+                <div class="text">
+                  ${data} <a href="">Voir ici</a>
+                </div>
+              </div>
+                 `;
+                 urlerror.appendChild(div); 
+                 
+               
+              
+            })
+            .catch(error => console.error('Error fetching the data:', error));
     </script>
 
 </body>

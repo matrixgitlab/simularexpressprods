@@ -57,7 +57,7 @@ async function searchByImage(productUrl) {
   
     if (!productidcheck) {
       console.error('Numéro de produit non trouvé dans l\'URL.');
-      return;
+      return null;
     }
 
     if (extractProductId(aliexpressUrl)){
@@ -176,7 +176,7 @@ async function searchByImage(productUrl) {
   await browser.close();
   return similarItems;
     }else{
-      return;
+      return null;
     }
 
 
@@ -193,9 +193,20 @@ app.post('/process', async (req, res) => {
   try {
     //await getSimilarItems(productUrl);
     const similarItems = await searchByImage(productUrl);
-    console.log(similarItems); 
+    console.log("similar items result : ",similarItems);
+    if (similarItems == null){
+      req.session.formData = "Veuillez entrer un lien AliExpress Valide exemple : https://a.aliexpress.com/ or https://www.aliexpress.com/item/4000414708937.html pour plus d'information sur le format le lien correcte veuillez voir ce video "; // Stocke les données dans la session
+
+      res.redirect('/'); // Redirige vers la page de résultat
+
+    }else{
+
+      console.log(similarItems); 
     req.session.formData = similarItems; // Stocke les données dans la session
     res.redirect('/result'); // Redirige vers la page de résultat
+
+    }
+    
     
   } catch (error) {
     console.error('Erreur:', error);
