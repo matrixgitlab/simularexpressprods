@@ -126,7 +126,7 @@ async function searchByImage(productUrl) {
      
 
     // Lance le navigateur
-    const browser = await puppeteer.launch({ headless: false});//,args: ['--proxy-server=35.185.196.38:3128'] 
+    const browser = await puppeteer.launch({ headless: true});//,args: ['--proxy-server=35.185.196.38:3128'] 
     const page = await browser.newPage();
    
     // Aller sur Google
