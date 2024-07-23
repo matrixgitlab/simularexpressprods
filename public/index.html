@@ -293,26 +293,52 @@
             100% { transform: rotate(360deg); }
         }*/
         /* Style pour le conteneur du message d'erreur */
-                .error-message {
-                background-color: #f8d7da; /* Couleur de fond rouge pâle */
-                color: #721c24; /* Couleur du texte rouge foncé */
-                padding: 15px; /* Espacement interne */
-                margin: 10px 0; /* Espacement externe */
-                border: 1px solid #f5c6cb; /* Bordure rouge pâle */
-                border-radius: 5px; /* Bordure arrondie */
-                font-family: Arial, sans-serif; /* Police de caractères */
-                font-size: 14px; /* Taille de la police */
-                display: flex; /* Flexbox pour aligner les éléments */
-                align-items: center; /* Centrer verticalement */
-                }
+.error-message {
+  background-color: #f8d7da; /* Couleur de fond rouge pâle */
+  color: #721c24; /* Couleur du texte rouge foncé */
+  padding: 1em; /* Espacement interne */
+  margin: 1em 0; /* Espacement externe */
+  border: 1px solid #f5c6cb; /* Bordure rouge pâle */
+  border-radius: 5px; /* Bordure arrondie */
+  font-family: Arial, sans-serif; /* Police de caractères */
+  display: flex; /* Flexbox pour aligner les éléments */
+  align-items: center; /* Centrer verticalement */
+}
 
-                .error-message .icon {
-                margin-right: 10px; /* Espacement à droite de l'icône */
-                }
+/* Icône à gauche du message */
+.error-message .icon {
+  margin-right: 0.5em; /* Espacement à droite de l'icône */
+}
 
-                .error-message .text {
-                flex-grow: 1; /* Prendre tout l'espace restant */
-                }
+/* Texte du message */
+.error-message .text {
+  flex-grow: 1; /* Prendre tout l'espace restant */
+  font-size: 1em; /* Taille de la police relative */
+}
+
+/* Media query pour les petits écrans */
+@media (max-width: 600px) {
+  .error-message {
+    padding: 0.5em; /* Réduire l'espacement interne */
+    font-size: 0.9em; /* Réduire la taille de la police */
+  }
+
+  .error-message .icon {
+    margin-right: 0.3em; /* Réduire l'espacement à droite de l'icône */
+  }
+}
+
+/* Media query pour les grands écrans */
+@media (min-width: 1024px) {
+  .error-message {
+    padding: 1.5em; /* Augmenter l'espacement interne */
+    font-size: 1.2em; /* Augmenter la taille de la police */
+  }
+
+  .error-message .icon {
+    margin-right: 1em; /* Augmenter l'espacement à droite de l'icône */
+  }
+}
 
     </style>
     
